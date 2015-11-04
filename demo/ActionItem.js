@@ -1,6 +1,6 @@
 'use strict';
 
-import React from 'react/addons';
+import React from 'react';
 import {SortableItemMixin} from '../src/index.js';
 
 export default React.createClass({
@@ -32,4 +32,3 @@ export default React.createClass({
     );
   }
 });
-

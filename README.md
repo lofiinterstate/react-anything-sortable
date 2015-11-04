@@ -45,7 +45,7 @@ var React = require('react');
 var Sortable = require('react-anything-sortable');
 var YourSortableItem = require('./YourItem');
 
-React.render(
+ReactDOM.render(
 <Sortable onSort={handleSort}>
   <YourItem sortData="1" />
   <YourItem sortData="2" />
@@ -60,7 +60,7 @@ and in `YourItem.js`
 ES6 `import` is recommended.
 
 ```
-import React from 'react/addons';
+import React from 'react';
 import {SortableItemMixin} from 'react-anything-sortable';
 
 const YourItem = React.createClass({

@@ -1,7 +1,8 @@
 /*eslint no-unused-expressions:0 */
 'use strict';
 
-import React from 'react/addons';
+import React from 'react';
+import ReactDOM from 'react-dom';
 import Sortable, {SortableItemMixin} from '../../src/index';
 import DemoItem from '../../demo/DemoItem';
 import triggerEvent from '../triggerEvent';
@@ -14,20 +15,23 @@ chai.use(spies);
 //Delay karma test execution
 window.__karma__.loaded = () => {};
 
-function injectCSS() {
+function init() {
   var link = document.createElement('link');
   link.href = 'base/demo/style.css';
   link.type = 'text/css';
   link.rel = 'stylesheet';
   document.head.appendChild(link);
 
+  var div = document.createElement('div');
+  div.id = 'test-main';
+  document.body.appendChild(div);
+
   link.onload = () => {
     window.__karma__.start();
   };
 }
 
-injectCSS();
-
+init();
 
 const expect = chai.expect;
 
@@ -35,11 +39,11 @@ const expect = chai.expect;
 describe('Sortable', () => {
   describe('Default scenario', () => {
     beforeEach(() => {
-      React.render(<Sortable />, document.body);
+      ReactDOM.render(<Sortable />, document.getElementById('test-main'));
     });
 
     afterEach(() => {
-      React.unmountComponentAtNode(document.body);
+      ReactDOM.unmountComponentAtNode(document.getElementById('test-main'));
     });
 
     it('should render properly without any child', () => {
@@ -50,17 +54,17 @@ describe('Sortable', () => {
 
   describe('Provide sortable children', () => {
     beforeEach(() => {
-      React.render(
+      ReactDOM.render(
         <Sortable>
-          <DemoItem sortData="1" />
-          <DemoItem sortData="2" />
-          <DemoItem sortData="3" />
+          <DemoItem sortData="1" key={1} />
+          <DemoItem sortData="2" key={2} />
+          <DemoItem sortData="3" key={3} />
         </Sortable>
-      , document.body);
+      , document.getElementById('test-main'));
     });
 
     afterEach(() => {
-      React.unmountComponentAtNode(document.body);
+      ReactDOM.unmountComponentAtNode(document.getElementById('test-main'));
     });
 
     it('should render 3 children', () => {
@@ -71,15 +75,15 @@ describe('Sortable', () => {
 
   describe('Provide sortable child', () => {
     beforeEach(() => {
-      React.render(
+      ReactDOM.render(
         <Sortable>
           <DemoItem sortData="1" />
         </Sortable>
-      , document.body);
+      , document.getElementById('test-main'));
     });
 
     afterEach(() => {
-      React.unmountComponentAtNode(document.body);
+      ReactDOM.unmountComponentAtNode(document.getElementById('test-main'));
     });
 
     it('should render 1 child', () => {
@@ -91,7 +95,7 @@ describe('Sortable', () => {
   describe('Provide sortable children with nulls', () => {
     beforeEach(() => {
 
-      React.render(
+      ReactDOM.render(
         <Sortable>
           {
             ['hello1', 'hello2', ''].map(function(name) {
@@ -104,11 +108,11 @@ describe('Sortable', () => {
             })
           }
         </Sortable>
-      , document.body);
+      , document.getElementById('test-main'));
     });
 
     afterEach(() => {
-      React.unmountComponentAtNode(document.body);
+      ReactDOM.unmountComponentAtNode(document.getElementById('test-main'));
     });
 
     it('should render 2 children', () => {
@@ -121,17 +125,17 @@ describe('Sortable', () => {
     var component, target;
 
     beforeEach(() => {
-      component = React.render(
+      component = ReactDOM.render(
         <Sortable className="style-for-test">
-          <DemoItem sortData="1" className="item-1">1</DemoItem>
-          <DemoItem sortData="2" className="item-2">2</DemoItem>
-          <DemoItem sortData="3" className="item-3">3</DemoItem>
+          <DemoItem sortData="1" className="item-1" key={1}>1</DemoItem>
+          <DemoItem sortData="2" className="item-2" key={2}>2</DemoItem>
+          <DemoItem sortData="3" className="item-3" key={3}>3</DemoItem>
         </Sortable>
-      , document.body);
+      , document.getElementById('test-main'));
     });
 
     afterEach(() => {
-      React.unmountComponentAtNode(document.body);
+      ReactDOM.unmountComponentAtNode(document.getElementById('test-main'));
       component = null;
       target = null;
     });
@@ -150,7 +154,7 @@ describe('Sortable', () => {
 
       triggerEvent(target, 'mousemove');
 
-      var children = component.getDOMNode().querySelectorAll('.ui-sortable-item');
+      var children = ReactDOM.findDOMNode(component).querySelectorAll('.ui-sortable-item');
       expect(children.length).to.equal(4);
     });
 
@@ -159,7 +163,7 @@ describe('Sortable', () => {
       target = document.querySelector('.ui-sortable-item');
       moveX(target, 25, 210);
 
-      var children = component.getDOMNode().querySelectorAll('.ui-sortable-item');
+      var children = ReactDOM.findDOMNode(component).querySelectorAll('.ui-sortable-item');
       expect(children[children.length - 1].textContent).to.equal('1');
     });
 
@@ -168,7 +172,7 @@ describe('Sortable', () => {
       target = document.querySelector('.item-3');
       moveX(target, 210, 25);
 
-      var children = component.getDOMNode().querySelectorAll('.ui-sortable-item');
+      var children = ReactDOM.findDOMNode(component).querySelectorAll('.ui-sortable-item');
       expect(children[0].textContent).to.equal('3');
     });
 
@@ -189,7 +193,7 @@ describe('Sortable', () => {
         clientY: 10
       });
 
-      var children = component.getDOMNode().querySelectorAll('.ui-sortable-item');
+      var children = ReactDOM.findDOMNode(component).querySelectorAll('.ui-sortable-item');
       expect(children.length).to.equal(3);
     });
 
@@ -229,17 +233,17 @@ describe('Sortable', () => {
     var component, target;
 
     beforeEach(() => {
-      component = React.render(
+      component = ReactDOM.render(
         <Sortable className="style-for-test full-width">
-          <DemoItem sortData="1" className="item-1">1</DemoItem>
-          <DemoItem sortData="2" className="item-2">2</DemoItem>
-          <DemoItem sortData="3" className="item-3">3</DemoItem>
+          <DemoItem sortData="1" className="item-1" key={1}>1</DemoItem>
+          <DemoItem sortData="2" className="item-2" key={2}>2</DemoItem>
+          <DemoItem sortData="3" className="item-3" key={3}>3</DemoItem>
         </Sortable>
-      , document.body);
+      , document.getElementById('test-main'));
     });
 
     afterEach(() => {
-      React.unmountComponentAtNode(document.body);
+      ReactDOM.unmountComponentAtNode(document.getElementById('test-main'));
       component = null;
       target = null;
     });
@@ -250,7 +254,7 @@ describe('Sortable', () => {
 
       moveY(target, 25, 180);
 
-      var children = component.getDOMNode().querySelectorAll('.ui-sortable-item');
+      var children = ReactDOM.findDOMNode(component).querySelectorAll('.ui-sortable-item');
       expect(children[children.length - 1].textContent).to.equal('1');
     });
 
@@ -259,7 +263,7 @@ describe('Sortable', () => {
       target = document.querySelector('.item-3');
       moveY(target, 180, 25);
 
-      var children = component.getDOMNode().querySelectorAll('.ui-sortable-item');
+      var children = ReactDOM.findDOMNode(component).querySelectorAll('.ui-sortable-item');
       expect(children[0].textContent).to.equal('3');
     });
 
@@ -271,17 +275,17 @@ describe('Sortable', () => {
     beforeEach(() => {
       callback = chai.spy();
 
-      React.render(
+      ReactDOM.render(
         <Sortable onSort={callback}>
-          <DemoItem sortData="1" className="item-1">1</DemoItem>
-          <DemoItem sortData="2" className="item-2">2</DemoItem>
-          <DemoItem sortData="3" className="item-3">3</DemoItem>
+          <DemoItem sortData="1" className="item-1" key={1}>1</DemoItem>
+          <DemoItem sortData="2" className="item-2" key={2}>2</DemoItem>
+          <DemoItem sortData="3" className="item-3" key={3}>3</DemoItem>
         </Sortable>
-      , document.body);
+      , document.getElementById('test-main'));
     });
 
     afterEach(() => {
-      React.unmountComponentAtNode(document.body);
+      ReactDOM.unmountComponentAtNode(document.getElementById('test-main'));
       callback = null;
     });
 
@@ -305,4 +309,3 @@ describe('Sortable', () => {
     });
   });
 });
-

@@ -10,18 +10,13 @@
 /**
  * @dependency
  */
-import React from 'react/addons';
+import React from 'react';
+import ReactDOM from 'react-dom';
 import {on, off, isFunction, isNumeric, position, closest, get,
         assign} from './utils';
 import SortableItemMixin from './SortableItemMixin';
 
-if (!React.addons) {
-  console.error('[react-anything-sortable]Missing required `React.addons`.');
-}
-
-const CX = React.addons.classSet;
-const CloneWithProps = React.addons.cloneWithProps;
-
+import CX from 'classnames';
 
 /**
  * @class Sortable
@@ -60,7 +55,7 @@ const Sortable = React.createClass({
   },
 
   componentDidMount () {
-    this.containerWidth = React.findDOMNode(this).offsetWidth;
+    this.containerWidth = ReactDOM.findDOMNode(this).offsetWidth;
   },
 
   componentWillUnmount () {
@@ -373,7 +368,7 @@ const Sortable = React.createClass({
         'visible': this.state.isDragging && isPlaceHolder
       });
 
-      return CloneWithProps(item, {
+      return React.cloneElement(item, {
         key: index,
         sortableClassName: itemClassName,
         sortableIndex: index,
@@ -402,7 +397,7 @@ const Sortable = React.createClass({
       width: this._dimensionArr[this._draggingIndex].width,
       height: this._dimensionArr[this._draggingIndex].height
     };
-    return CloneWithProps(item, {
+    return React.cloneElement(item, {
       sortableClassName: 'ui-sortable-item ui-sortable-dragging',
       key: this._dimensionArr.length,
       sortableStyle: style,
